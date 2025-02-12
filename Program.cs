@@ -16,6 +16,7 @@ namespace AmmoTracker
         {
             try
             {
+                DotNetEnv.Env.Load();
                 Console.Title = "Pip-Boy 3000";
                 SetupConsole();
 
@@ -389,9 +390,9 @@ ___  ___         _   _                _  _
             public async Task CreateAmmoAsync()
             {
                 string? connectionString =
-                    _configuration.GetConnectionString("Supabase")
+                    Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING")
                     ?? throw new InvalidOperationException(
-                        "Connection string 'Supabase' not found in configuration."
+                        "SUPABASE_CONNECTION_STRING environment variable not found."
                     );
 
                 var testAmmo = CreateTestAmmo();
@@ -469,9 +470,9 @@ ___  ___         _   _                _  _
                     .Build();
 
                 string? connectionString =
-                    configuration.GetConnectionString("Supabase")
+                    Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING")
                     ?? throw new InvalidOperationException(
-                        "Connection string 'Supabase' not found in configuration."
+                        "SUPABASE_CONNECTION_STRING environment variable not found."
                     );
 
                 using (var connection = new NpgsqlConnection(connectionString))
