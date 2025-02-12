@@ -1,6 +1,9 @@
 # Environment Variables
 .env
 
+# Google Drive Upload
+.tmp.driveupload/
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
