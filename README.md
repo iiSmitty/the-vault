@@ -116,7 +116,7 @@ MIT
 
 ## 🙋‍♂️ Author
 
-André ASmit
+André Smit
 - GitHub: [@iiSmitty](https://github.com/iiSmitty)
 
 ---
