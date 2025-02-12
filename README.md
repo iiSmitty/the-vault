@@ -52,15 +52,24 @@ The Vault is an ammunition tracking tool inspired by the Fallout series' Pip-Boy
 ### Dependencies
 - Microsoft.Extensions.Configure
 - Npgsql
+- DotNetEnv
 
 ## 📦 Installation
 
 1. Clone the repository
 ```bash
 git clone https://github.com/iiSmitty/the-vault.git
+cd the-vault
 ```
 
-2. Configure Supabase
+2. Set up configuration files
+```bash
+# Copy the example configuration file
+cp appsettings.example.json appsettings.json
+cp appsettings.example.json appsettings.Development.json
+```
+
+3. Configure Supabase
 - Create a Supabase project
 - Copy the `.env.example` to `.env`
 - Update the `.env` file with your Supabase credentials:
@@ -68,12 +77,12 @@ git clone https://github.com/iiSmitty/the-vault.git
 SUPABASE_CONNECTION_STRING=Host=aws-0-eu-west-2.pooler.supabase.com;Port=<your-port>;Username=<your-username>;Password=<your-password>;Database=postgres;
 ```
 
-3. Build the project
+4. Build the project
 ```bash
 dotnet build
 ```
 
-4. Run the application
+5. Run the application
 ```bash
 dotnet run
 ```
