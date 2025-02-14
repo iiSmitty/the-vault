@@ -1,3 +1,5 @@
+using AmmoTracker.Models;
+
 namespace AmmoTracker.Interfaces
 {
     /// <summary>

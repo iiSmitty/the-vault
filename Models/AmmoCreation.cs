@@ -1,6 +1,7 @@
 using AmmoTracker.Interfaces;
 using AmmoTracker.Models;
 using AmmoTracker.Services;
+using AmmoTracker.Utilities;
 
 namespace AmmoTracker.Models
 {
@@ -23,7 +24,8 @@ namespace AmmoTracker.Models
         {
             try
             {
-                TypeEffect("\nEntering Ammunition Creation Interface...");
+                Console.Clear();
+                ConsoleUtilities.TypeEffect("\nEntering Ammunition Creation Interface...");
                 await Task.Delay(1000); // Fallout-style delay
 
                 var ammo = await CollectAmmoDetails();
@@ -170,7 +172,7 @@ namespace AmmoTracker.Models
             }
 
             TypeEffect("\n\nConfirm details? (Y/N): ");
-            var key = Console.ReadKey(intercept: true);
+            var key = await Task.Run(() => Console.ReadKey(intercept: true));
             return key.Key == ConsoleKey.Y;
         }
 

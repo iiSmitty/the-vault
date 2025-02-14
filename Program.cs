@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using AmmoTracker.Interfaces;
 using AmmoTracker.Models;
+using AmmoTracker.Services;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
@@ -627,6 +629,36 @@ ___  ___         _   _                _  _
         {
             TypeEffect("\nPress any key to return to the main menu...");
             await Task.Run(() => Console.ReadKey());
+        }
+
+        /// <summary>
+        /// Handles the creation of new ammunition with user input.
+        /// </summary>
+        private static async Task CreateNewAmmo()
+        {
+            try
+            {
+                var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: false)
+                    .AddJsonFile(
+                        $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
+                        optional: true
+                    )
+                    .AddEnvironmentVariables()
+                    .Build();
+
+                var ammoService = new AmmoService(); // Or however you're getting your AmmoService
+                var ammoCreation = new AmmoCreation(ammoService);
+                await ammoCreation.CreateNewAmmoAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                TypeEffect($"\nError in ammunition creation: {ex.Message}");
+                Console.ResetColor();
+                Console.ReadKey();
+            }
         }
     }
 }
