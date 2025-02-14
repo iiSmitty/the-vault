@@ -482,86 +482,146 @@ ___  ___         _   _                _  _
             }
         }
 
+        /// <summary>
+        /// Retrieves and displays ammunition details for a specific ID from the database.
+        /// </summary>
+        /// <param name="id">The ID of the ammunition record to retrieve.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the connection string is not found.</exception>
         private static async Task ViewAmmoDetailsAsync(int id)
         {
             try
             {
-                var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json", optional: false)
-                    .AddJsonFile(
-                        $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
-                        optional: true
-                    )
-                    .AddEnvironmentVariables()
-                    .Build();
+                var configuration = BuildConfiguration();
+                string? connectionString = GetConnectionString();
+                var ammo = await RetrieveAmmoDetails(id, connectionString);
 
-                string? connectionString =
-                    Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING")
-                    ?? throw new InvalidOperationException(
-                        "SUPABASE_CONNECTION_STRING environment variable not found."
-                    );
-
-                using (var connection = new NpgsqlConnection(connectionString))
+                if (ammo != null)
                 {
-                    await connection.OpenAsync();
-                    const string sql =
-                        "SELECT id, caliber, brand, price, purchase_date, quantity FROM ammo WHERE id = @Id";
-
-                    using (var command = new NpgsqlCommand(sql, connection))
-                    {
-                        command.Parameters.AddWithValue("@Id", id);
-                        using (var reader = await command.ExecuteReaderAsync())
-                        {
-                            if (await reader.ReadAsync())
-                            {
-                                var ammo = new Ammo
-                                {
-                                    Id = reader.GetInt32(0),
-                                    Caliber = reader.GetString(1),
-                                    Brand = reader.GetString(2),
-                                    Price = reader.GetDecimal(3),
-                                    PurchaseDate = reader.GetDateTime(4),
-                                    Quantity = reader.GetInt32(5),
-                                };
-
-                                Console.WriteLine("\nAmmo Details:");
-
-                                var details = new[]
-                                {
-                                    ("ID", ammo.Id.ToString()),
-                                    ("Brand", ammo.Brand),
-                                    ("Caliber", ammo.Caliber),
-                                    ("Quantity", ammo.Quantity.ToString()),
-                                    ("Total Price", $"R{ammo.Price:F2}"),
-                                    ("Price Per Round", $"{ammo.PricePerRound:F2}"),
-                                    ("Purchase Date", ammo.PurchaseDate.ToString("d")),
-                                };
-
-                                for (int i = 0; i < details.Length; i++)
-                                {
-                                    var (label, value) = details[i];
-                                    var prefix = new string(' ', i * 3) + "└─ ";
-                                    Console.WriteLine($"{prefix}{label}: {value}");
-                                }
-                            }
-                            else
-                            {
-                                TypeEffect($"No ammo found with ID {id}");
-                            }
-                        }
-                    }
+                    DisplayAmmoDetails(ammo);
+                }
+                else
+                {
+                    TypeEffect($"No ammo found with ID {id}");
                 }
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                TypeEffect($"Error retrieving ammo details: {ex.Message}");
-                Console.ResetColor();
+                HandleError(ex);
             }
 
+            await WaitForKeyPress();
+        }
+
+        /// <summary>
+        /// Builds the configuration for the application.
+        /// </summary>
+        /// <returns>The configured IConfiguration instance.</returns>
+        private static IConfiguration BuildConfiguration()
+        {
+            return new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile(
+                    $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
+                    optional: true
+                )
+                .AddEnvironmentVariables()
+                .Build();
+        }
+
+        /// <summary>
+        /// Retrieves the connection string from environment variables.
+        /// </summary>
+        /// <returns>The database connection string.</returns>
+        /// <exception cref="InvalidOperationException">Thrown when the connection string is not found.</exception>
+        private static string GetConnectionString()
+        {
+            return Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING")
+                ?? throw new InvalidOperationException(
+                    "SUPABASE_CONNECTION_STRING environment variable not found."
+                );
+        }
+
+        /// <summary>
+        /// Retrieves ammunition details from the database.
+        /// </summary>
+        /// <param name="id">The ID of the ammunition to retrieve.</param>
+        /// <param name="connectionString">The database connection string.</param>
+        /// <returns>The ammunition details if found, null otherwise.</returns>
+        private static async Task<Ammo?> RetrieveAmmoDetails(int id, string connectionString)
+        {
+            using var connection = new NpgsqlConnection(connectionString);
+            await connection.OpenAsync();
+
+            const string sql =
+                "SELECT id, caliber, brand, price, purchase_date, quantity FROM ammo WHERE id = @Id";
+
+            using var command = new NpgsqlCommand(sql, connection);
+            command.Parameters.AddWithValue("@Id", id);
+
+            using var reader = await command.ExecuteReaderAsync();
+            if (await reader.ReadAsync())
+            {
+                return new Ammo
+                {
+                    Id = reader.GetInt32(0),
+                    Caliber = reader.GetString(1),
+                    Brand = reader.GetString(2),
+                    Price = reader.GetDecimal(3),
+                    PurchaseDate = reader.GetDateTime(4),
+                    Quantity = reader.GetInt32(5),
+                };
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Displays ammunition details in a formatted manner.
+        /// </summary>
+        /// <param name="ammo">The ammunition details to display.</param>
+        private static void DisplayAmmoDetails(Ammo ammo)
+        {
+            Console.WriteLine("\nAmmo Details:");
+            var details = new[]
+            {
+                ("ID", ammo.Id.ToString()),
+                ("Brand", ammo.Brand),
+                ("Caliber", ammo.Caliber),
+                ("Quantity", ammo.Quantity.ToString()),
+                ("Total Price", $"R{ammo.Price:F2}"),
+                ("Price Per Round", $"{ammo.PricePerRound:F2}"),
+                ("Purchase Date", ammo.PurchaseDate.ToString("d")),
+            };
+
+            for (int i = 0; i < details.Length; i++)
+            {
+                var (label, value) = details[i];
+                var prefix = new string(' ', i * 3) + "└─ ";
+                Console.WriteLine($"{prefix}{label}: {value}");
+            }
+        }
+
+        /// <summary>
+        /// Handles and displays error messages.
+        /// </summary>
+        /// <param name="ex">The exception to handle.</param>
+        private static void HandleError(Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            TypeEffect($"Error retrieving ammo details: {ex.Message}");
+            Console.ResetColor();
+        }
+
+        /// <summary>
+        /// Waits for a key press before continuing.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private static async Task WaitForKeyPress()
+        {
             TypeEffect("\nPress any key to return to the main menu...");
-            Console.ReadKey();
+            await Task.Run(() => Console.ReadKey());
         }
     }
 }
