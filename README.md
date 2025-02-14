@@ -18,30 +18,73 @@ ___  ___         _   _                _  _
 The Vault is an ammunition tracking tool inspired by the Fallout series' Pip-Boy interface. It helps shooting enthusiasts maintain an accurate inventory of their ammunition through a retro-style terminal interface, complete with the iconic green text and animations that Fallout fans will recognize.
 
 ## ✨ Features
-
-### Current Features
 - Track multiple ammunition types with detailed information:
   - Caliber
   - Brand
   - Purchase price
   - Purchase date
   - Quantity
-- Comprehensive logging system that records:
-  - All ammunition transactions
-  - Action types
-  - Quantity changes
-  - Timestamps
+- Comprehensive logging system for ammunition transactions
 - Fallout-inspired terminal interface with:
   - Custom ASCII art
   - Pip-Boy-style green text
   - Retro animations
 - Persistent data storage using Supabase
 
-### 🚀 Planned Features
-- Sorting and filtering capabilities
-- Dashboard view for overall ammunition status
-- Full CRUD operations
-- RESTful API endpoints for remote updates
+## 🗺️ Roadmap
+
+### 🎯 Core Features
+- [ ] Create Operation
+  - [ ] `feat: add create ammunition menu option`
+  - [ ] `feat: implement create ammunition logic`
+  - [ ] `feat: add input validation for new ammo entries`
+  - [ ] `feat: add success/error messages for creation`
+
+- [ ] Update Operation
+  - [ ] `feat: add update ammunition menu option`
+  - [ ] `feat: implement ammunition search by ID`
+  - [ ] `feat: add update ammunition logic`
+  - [ ] `feat: implement confirmation prompt`
+
+- [ ] Delete Operation
+  - [ ] `feat: add delete ammunition menu option`
+  - [ ] `feat: implement delete ammunition logic`
+  - [ ] `feat: add deletion confirmation prompt`
+  - [ ] `feat: implement success/error messages`
+
+- [ ] View Operation
+  - [ ] `feat: enhance ammunition detail view`
+  - [ ] `feat: add formatted display of ammo details`
+  - [ ] `feat: implement pagination for multiple records`
+
+### 📝 Logging System
+- [ ] Basic Logging
+  - [ ] `feat: create basic logging structure`
+  - [ ] `feat: implement create operation logging`
+  - [ ] `feat: implement update operation logging`
+  - [ ] `feat: implement delete operation logging`
+  - [ ] `feat: add timestamp to log entries`
+
+### 📊 Dashboard Features
+- [ ] View Options
+  - [ ] `feat: add dashboard menu option`
+  - [ ] `feat: implement caliber filter view`
+  - [ ] `feat: implement brand filter view`
+  - [ ] `feat: add quantity sorting feature`
+  - [ ] `feat: implement price analysis display`
+
+### 🔌 API Integration
+- [ ] Basic Setup
+  - [ ] `feat: set up basic API structure`
+  - [ ] `feat: implement API authentication`
+  - [ ] `docs: add API documentation`
+
+- [ ] Endpoints
+  - [ ] `feat: implement GET ammunition endpoint`
+  - [ ] `feat: implement POST ammunition endpoint`
+  - [ ] `feat: implement PUT ammunition endpoint`
+  - [ ] `feat: add endpoint error handling`
+  - [ ] `test: add API endpoint tests`
 
 ## 🛠️ Technical Requirements
 
