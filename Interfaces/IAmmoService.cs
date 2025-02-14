@@ -1,4 +1,4 @@
-namespace AmmoTracker.Models
+namespace AmmoTracker.Interfaces
 {
     /// <summary>
     /// Defines operations for managing ammunition data

@@ -1,6 +1,8 @@
+using AmmoTracker.Interfaces;
+using AmmoTracker.Models;
 using Npgsql;
 
-namespace AmmoTracker.Models
+namespace AmmoTracker.Services
 {
     /// <summary>
     /// Provides implementation for ammunition data management operations
