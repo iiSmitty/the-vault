@@ -148,7 +148,8 @@ ___  ___         _   _                _  _
             Console.Clear();
             LoadLogo();
             TypeEffect("=== Main Menu ===");
-            Console.WriteLine("[1] Create Test Ammo");
+            Console.WriteLine("[0] Create Test Ammo");
+            Console.WriteLine("[1] Create New Ammo");
             Console.WriteLine("[2] View Ammo Details");
             Console.WriteLine("[3] Exit");
         }
@@ -171,8 +172,12 @@ ___  ___         _   _                _  _
         {
             switch (choice)
             {
-                case "1":
+                case "0":
                     await CreateTestAmmo();
+                    return false;
+
+                case "1":
+                    await CreateNewAmmo();
                     return false;
 
                 case "2":
