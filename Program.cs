@@ -375,11 +375,20 @@ ___  ___         _   _                _  _
             await ammoTest.CreateAmmoAsync();
         }
 
+        /// <summary>
+        /// Handles the creation and management of test ammunition entries.
+        /// </summary>
         public class AmmoTest
         {
             private readonly IConfiguration _configuration;
             private readonly IAmmoService _ammoService;
 
+            /// <summary>
+            /// Initializes a new instance of the AmmoTest class.
+            /// </summary>
+            /// <param name="configuration">The configuration interface for accessing app settings.</param>
+            /// <param name="ammoService">The service interface for ammunition operations.</param>
+            /// <exception cref="ArgumentNullException">Thrown when configuration or ammoService is null.</exception>
             public AmmoTest(IConfiguration configuration, IAmmoService ammoService)
             {
                 _configuration =
@@ -387,6 +396,11 @@ ___  ___         _   _                _  _
                 _ammoService = ammoService ?? throw new ArgumentNullException(nameof(ammoService));
             }
 
+            /// <summary>
+            /// Creates a test ammunition entry in the database.
+            /// </summary>
+            /// <returns>A task representing the asynchronous operation.</returns>
+            /// <exception cref="InvalidOperationException">Thrown when the connection string is not found.</exception>
             public async Task CreateAmmoAsync()
             {
                 string? connectionString =
@@ -396,7 +410,6 @@ ___  ___         _   _                _  _
                     );
 
                 var testAmmo = CreateTestAmmo();
-
                 try
                 {
                     await _ammoService.InsertAmmoAsync(connectionString, testAmmo);
@@ -406,10 +419,13 @@ ___  ___         _   _                _  _
                 {
                     PrintError(ex);
                 }
-
                 await WaitForKeyPress();
             }
 
+            /// <summary>
+            /// Creates a test ammunition object with predefined values.
+            /// </summary>
+            /// <returns>A new Ammo object with test data.</returns>
             private static Ammo CreateTestAmmo() =>
                 new()
                 {
@@ -420,6 +436,10 @@ ___  ___         _   _                _  _
                     PurchaseDate = DateTime.UtcNow,
                 };
 
+            /// <summary>
+            /// Prints the successful creation of test ammunition with formatted details.
+            /// </summary>
+            /// <param name="ammo">The ammunition object to display.</param>
             private static void PrintSuccess(Ammo ammo)
             {
                 var details = new[]
@@ -432,7 +452,6 @@ ___  ___         _   _                _  _
                 };
 
                 Console.WriteLine("\nTest Ammo creation succeeded!");
-
                 for (int i = 0; i < details.Length; i++)
                 {
                     var (label, value) = details[i];
@@ -441,6 +460,10 @@ ___  ___         _   _                _  _
                 }
             }
 
+            /// <summary>
+            /// Prints error details in red text to the console.
+            /// </summary>
+            /// <param name="ex">The exception containing the error details.</param>
             private static void PrintError(Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -448,6 +471,10 @@ ___  ___         _   _                _  _
                 Console.ResetColor();
             }
 
+            /// <summary>
+            /// Waits for a key press before returning to the main menu.
+            /// </summary>
+            /// <returns>A task representing the asynchronous operation.</returns>
             private static async Task WaitForKeyPress()
             {
                 Console.WriteLine("\nPress any key to return to the main menu...");
