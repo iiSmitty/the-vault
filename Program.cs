@@ -1,7 +1,7 @@
-﻿using System.IO;
-using AmmoTracker.Interfaces;
+﻿using AmmoTracker.Interfaces;
 using AmmoTracker.Models;
 using AmmoTracker.Services;
+using AmmoTracker.Utilities;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
@@ -101,14 +101,17 @@ ___  ___         _   _                _  _
                 LoadLogo();
 
                 // Display creator credits
-                TypeEffect("Coded by André Smit", delay: 75);
+                ConsoleUtilities.TypeEffect("Coded by André Smit", delay: 75);
 
                 // Show system initialization
                 LoadingAnimation("Initializing Pip-Boy", duration: 4000);
 
                 // Display welcome messages
-                TypeEffect("Welcome, Vault Dweller.", delay: 100);
-                TypeEffect("System Diagnostics: All Systems Operational.", delay: 60);
+                ConsoleUtilities.TypeEffect("Welcome, Vault Dweller.", delay: 100);
+                ConsoleUtilities.TypeEffect(
+                    "System Diagnostics: All Systems Operational.",
+                    delay: 60
+                );
 
                 Thread.Sleep(SYSTEM_PAUSE);
             }
@@ -149,7 +152,7 @@ ___  ___         _   _                _  _
         {
             Console.Clear();
             LoadLogo();
-            TypeEffect("=== Main Menu ===");
+            ConsoleUtilities.TypeEffect("=== Main Menu ===");
             Console.WriteLine("[0] Create Test Ammo");
             Console.WriteLine("[1] Create New Ammo");
             Console.WriteLine("[2] View Ammo Details");
@@ -202,7 +205,7 @@ ___  ___         _   _                _  _
         private static async Task CreateTestAmmo()
         {
             Console.Clear();
-            TypeEffect("Creating test ammo...");
+            ConsoleUtilities.TypeEffect("Creating test ammo...");
             await TestAmmoCreationAsync();
         }
 
@@ -212,7 +215,7 @@ ___  ___         _   _                _  _
         private static async Task ViewAmmoDetails()
         {
             Console.Clear();
-            TypeEffect("Enter Ammo ID to view: ");
+            ConsoleUtilities.TypeEffect("Enter Ammo ID to view: ");
 
             if (int.TryParse(Console.ReadLine(), out int ammoId))
             {
@@ -220,7 +223,7 @@ ___  ___         _   _                _  _
             }
             else
             {
-                TypeEffect("Invalid ID format. Press any key to continue...");
+                ConsoleUtilities.TypeEffect("Invalid ID format. Press any key to continue...");
                 Console.ReadKey(true);
             }
         }
@@ -231,7 +234,7 @@ ___  ___         _   _                _  _
         private static async Task ExitApplication()
         {
             Console.Clear();
-            TypeEffect("Exiting Pip-Boy. Stay safe, Vault Dweller!");
+            ConsoleUtilities.TypeEffect("Exiting Pip-Boy. Stay safe, Vault Dweller!");
             await Task.Delay(2000);
         }
 
@@ -282,35 +285,6 @@ ___  ___         _   _                _  _
             }
 
             Console.WriteLine(" Done!");
-        }
-
-        /// <summary>
-        /// Creates a typewriter effect for the given message
-        /// </summary>
-        /// <param name="message">The message to display</param>
-        /// <param name="delay">Delay between characters in milliseconds (default: 50)</param>
-        /// <param name="newLine">Whether to add a new line at the end (default: true)</param>
-        public static void TypeEffect(string message, int delay = 50, bool newLine = true)
-        {
-            if (string.IsNullOrEmpty(message))
-                throw new ArgumentNullException(nameof(message));
-
-            if (delay < 0)
-                throw new ArgumentException("Delay must be non-negative", nameof(delay));
-
-            foreach (char c in message)
-            {
-                Console.Write(c);
-                if (delay > 0)
-                {
-                    Thread.Sleep(delay);
-                }
-            }
-
-            if (newLine)
-            {
-                Console.WriteLine();
-            }
         }
 
         public class AmmoService : IAmmoService
@@ -509,7 +483,7 @@ ___  ___         _   _                _  _
                 }
                 else
                 {
-                    TypeEffect($"No ammo found with ID {id}");
+                    ConsoleUtilities.TypeEffect($"No ammo found with ID {id}");
                 }
             }
             catch (Exception ex)
@@ -617,7 +591,7 @@ ___  ___         _   _                _  _
         private static void HandleError(Exception ex)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            TypeEffect($"Error retrieving ammo details: {ex.Message}");
+            ConsoleUtilities.TypeEffect($"Error retrieving ammo details: {ex.Message}");
             Console.ResetColor();
         }
 
@@ -627,7 +601,7 @@ ___  ___         _   _                _  _
         /// <returns>A task representing the asynchronous operation.</returns>
         private static async Task WaitForKeyPress()
         {
-            TypeEffect("\nPress any key to return to the main menu...");
+            ConsoleUtilities.TypeEffect("\nPress any key to return to the main menu...");
             await Task.Run(() => Console.ReadKey());
         }
 
@@ -655,7 +629,7 @@ ___  ___         _   _                _  _
             catch (Exception ex)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                TypeEffect($"\nError in ammunition creation: {ex.Message}");
+                ConsoleUtilities.TypeEffect($"\nError in ammunition creation: {ex.Message}");
                 Console.ResetColor();
                 Console.ReadKey();
             }
